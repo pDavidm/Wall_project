@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>The Wall</title>
+    {% load static %}
+    {% load post_tags %}
+    <link rel="stylesheet" type="text/css" href="{% static 'wall_app/css/bootstrap.css' %}">
+</head>
+
+<body class="bg-dark">
+    <nav class="navbar navbar-expand-lg justify-content-between navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">The Wall</span>
+        <div class="navbar-nav">
+            <span class="navbar-text active">Welcome {{user.first_name}},</span>
+            <a class="nav-item nav-link" href="{% url 'login:logout' %}">logout</a>
+        </div>
+    </nav>
+    <div class="container bg-light mt-5 p-3 rounded shadow">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{message.tags}} text-danger" {% endif %}>{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <form action="{% url 'wall:makePost' %}" method="POST">
+            <div class="form-group">
+                {% csrf_token %}
+                <label class="font-weight-bold" for="post">Make a Post</label>
+                <textarea class="form-control" name="post" id="post" rows="5"></textarea>
+            </div>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary mb-2">Post</button>
+            </div>
+        </form>
+        {% for post in post_list %}
+        <div class="container">
+            <p class="font-weight-bold">{{post.user.first_name}} {{post.user.last_name}} at {{post.created_at}}</p>
+            <div class="row">
+                <div class="col-lg-11 offset-lg-1">
+                    <p>{{post.post}}</p>
+                </div>
+                {% if request.session.user_id == post.user.id and not post.created_at|min_ago:30 %}
+                    <form action="{% url 'wall:deletePost' %}" method="POST"> 
+                        {% csrf_token %}
+                        <div class="col-lg offset-lg-8">
+                            <input type="hidden" name="post_id" value="{{post.id}}">
+                            <button type="submit" class="btn btn-danger btn-sm mb-3">Delete Post</button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-lg-10 offset-lg-2">
+                    {% for comment in post.comments.all %}
+                    <p class="font-weight-bold">{{comment.user.first_name}} {{comment.user.last_name}} at
+                        {{comment.created_at}}</p>
+                    <p>{{comment.comment}}</p>
+                    {% endfor %}
+                    <form action="{% url 'wall:makeComment' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" name="post_id" value="{{post.id}}">
+                            <textarea class="form-control" name="comment" id="comment" rows="2"></textarea>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary btn-sm mb-2">comment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

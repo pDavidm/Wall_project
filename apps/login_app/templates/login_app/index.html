@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login & Registration</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'login_app/css/bootstrap.css' %}">
+
+</head>
+
+<body class="bg-dark">
+    <div class="container p-3">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{message.tags}} text-danger" {% endif %}>{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="row bg-light shadow rounded">
+            <div class="col-lg-6 ">
+                <h1>Registration</h1>
+                <form action="register" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="first_name" class="col-lg-3">First Name</label>
+                        <input type="text" name="first_name" id="first_name" class="form-control col-lg-7">
+                    </div>
+                    <div class="form-group row">
+                        <label for="last_name" class="col-lg-3">Last Name</label>
+                        <input type="text" name="last_name" id="last_name" class="form-control col-lg-7">
+                    </div>
+                    <div class="form-group row">
+                        <label for="birthday" class="col-lg-3">Birthday</label>
+                        <input type="date" name="birthday" id="birthday" class="form-control col-lg-7">
+                    </div>
+                    <div class="form-group row">
+                        <label for="email_reg" class="col-lg-3">Email</label>
+                        <input type="email" name="email_reg" id="email_reg" class="form-control col-lg-7">
+                    </div>
+                    <div class="form-group row">
+                        <label for="password_reg" class="col-lg-3">Password</label>
+                        <input type="password" name="password_reg" id="password_reg" class="form-control col-lg-7">
+                    </div>
+                    <div class="form-group row">
+                        <label for="confirm_pw" class="col-lg-3">Confirm Password</label>
+                        <input type="password" name="confirm_pw" id="confirm_pw" class="form-control col-lg-7">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Register</button>
+
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <h1>Login</h1>
+                <form action="login" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="email" class="col-lg-3">Email</label>
+                        <input type="email" name="email" id="email" class="form-control col-lg-7">
+                    </div>
+                    <div class="form-group row">
+                        <label for="password" class="col-lg-3">Password</label>
+                        <input type="password" name="password" id="password" class="form-control col-lg-7">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
